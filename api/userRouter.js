@@ -5,8 +5,11 @@ const jwt = require("jsonwebtoken");
 const {
   createUser,
   getUser,
+  getUserById,
   getUserByUsername,
   getAllUsers,
+  updateUserById,
+  deleteUserById
 } = require("../db/users");
 
 const { createOrder } = require("../db/orders");
@@ -55,13 +58,78 @@ userRouter.get("/me", async (req, res, next) => {
   res.send(req.user);
 });
 
-userRouter.get("/all", async (req, res, next) => {
+userRouter.get("/:userId", async (req, res, next) => {
   try {
-    const users = await getAllUsers();
-    res.send(users);
+    const { userId } = req.params; // Extract userId from the URL parameters
+    const user = await getUserById(userId);
+
+    if (!user) {
+      return res.status(404).send({ error: "User not found" });
+    }
+
+    res.send(user);
   } catch (error) {
     next(error);
   }
 });
+
+userRouter.get("/username/:username", async (req, res, next) => {
+  try {
+    const { username } = req.params; // Extract username from the URL parameters
+    const user = await getUserByUsername(username);
+
+    if (!user) {
+      return res.status(404).send({ error: "User not found" });
+    }
+
+    res.send(user);
+  } catch (error) {
+    next(error);
+  }
+});
+
+userRouter.patch("/:userId", async (req, res, next) => {
+  try {
+    const { userId } = req.params; // Extract userId from the URL parameters
+    const updateData = req.body; // Extract the data to be updated from the request body
+
+    // Call the updateUserById function with userId and updateData
+    const updatedUser = await updateUserById(userId, updateData);
+
+    if (!updatedUser) {
+      return res.status(404).send({ error: "User not found or no update was made" });
+    }
+
+    res.send(updatedUser);
+  } catch (error) {
+    next(error);
+  }
+});
+
+userRouter.delete("/:userId", async (req, res, next) => {
+  try {
+    const { userId } = req.params; // Extract userId from the URL parameters
+
+    // Call the deleteUserById function with userId
+    const deletedUser = await deleteUserById(userId);
+
+    if (!deletedUser) {
+      return res.status(404).send({ error: "User not found" });
+    }
+
+    res.status(200).send({ message: "User successfully deleted", deletedUser });
+  } catch (error) {
+    next(error);
+  }
+});
+
+userRouter.get("/", async (req, res, next) => {
+    try {
+      const users = await getAllUsers();
+      res.send(users);
+    } catch (error) {
+      next(error);
+    }
+  });
 
 module.exports = userRouter;

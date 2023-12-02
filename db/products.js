@@ -20,7 +20,7 @@ const getProductPrice = async (productId) => {
 const getProductById = async (productId) => {
   try {
     const { rows: [product] } = await client.query(
-      `SELECT * FROM products WHERE id = $1;`,
+      `SELECT * FROM products WHERE id = $1`,
       [productId]
     );
     return product;
@@ -29,14 +29,18 @@ const getProductById = async (productId) => {
   }
 };
 
-const createProduct = async ({ title, description, imgurl, stock, price }) => {
-  // Parameter validation as before
+const createProduct = async ({ title, description, imgurl, stock, price, category }) => {
+  
 
   try {
-    const { rows: [product] } = await client.query(
-      `INSERT INTO products (title, description, imgurl, stock, price) VALUES ($1, $2, $3, $4, $5) RETURNING *;`,
-      [title, description, imgurl, stock, price]
-    );
+    const sql = `
+      INSERT INTO products (title, description, imgurl, stock, price, category)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *;
+    `;
+    const params = [title, description, imgurl, stock, price, category];
+
+    const { rows: [product] } = await client.query(sql, params);
     return product;
   } catch (error) {
     throw error;

@@ -18,12 +18,13 @@ productRouter.get("/", async (req, res, next) => {
   }
 });
 
-productRouter.post("/", async (req, res, next) => {
+productRouter.post("/", async (req, res) => {
   try {
-    const product = await createProduct(req.body);
-    res.status(201).json(product);
+    const product = await createProduct(req.body); 
+    res.status(201).send(product);
   } catch (error) {
-    next(error);
+    console.error(error);
+    res.status(500).send({ error: error.message });
   }
 });
 
@@ -40,23 +41,28 @@ productRouter.patch("/:productId", async (req, res, next) => {
 });
 
 productRouter.delete("/:productId", async (req, res, next) => {
-  const { productId } = req.params;
-  
   try {
-    const deletedProduct = await destroyProduct({ productId });
-    res.json(deletedProduct);
+    const { productId } = req.params;
+    const deletedProduct = await destroyProduct(productId);
+    res.status(200).json(deletedProduct);
   } catch (error) {
     next(error);
   }
 });
 
+
 productRouter.get("/:productId", async (req, res, next) => {
   try {
-    const product = await getProductById({ productId: req.params.productId });
-    if (!product) {
-      return res.status(404).send("Product not found");
+    const productId = parseInt(req.params.productId, 10);
+    if (isNaN(productId)) {
+      return res.status(400).send({ error: "Invalid product ID" });
     }
-    res.json(product);
+
+    const product = await getProductById(productId);
+    if (!product) {
+      return res.status(404).send({ error: "Product not found" });
+    }
+    res.send(product);
   } catch (error) {
     next(error);
   }

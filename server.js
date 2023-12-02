@@ -39,7 +39,7 @@ app.use(async (req, res, next) => {
 });
 
 // API Routes
-app.use('/api', apiRouter); // Assuming your routes are defined in this file
+app.use('/api', apiRouter); 
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
