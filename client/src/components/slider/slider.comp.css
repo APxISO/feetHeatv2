@@ -1,0 +1,57 @@
+.sliderCont {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    background-color: whitesmoke;
+    align-items: center;
+  }
+  
+  .slideShow {
+    height: 100%;
+    display: flex;
+    transition: all 1.5s ease;
+  }
+  
+  .slide {
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(
+        rgba(255, 255, 255, 0.5),
+        rgba(255, 255, 255, 0.5)
+      ),
+      url("https://images.pexels.com/photos/8633771/pexels-photo-8633771.jpeg?cs=srgb&dl=pexels-%C3%A7a%C4%9F%C4%B1n-kargi-8633771.jpg&fm=jpg")
+        center;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .slideInfo {
+    flex: 1;
+    padding: 50px;
+  }
+  
+  .slideInfo h1 {
+    font-size: 60px;
+  }
+  
+  .slideInfo p {
+    margin: 50px 0px;
+    font-size: 2rem;
+    font-weight: 500 bold;
+    letter-spacing: 3px;
+  }
+  
+  .slideInfo button {
+    padding: 10px;
+    font-size: 20px;
+    color: white;
+    background-color: red;
+    cursor: pointer;
+  }
+  
+  .slideInfo button:hover {
+    animation: alternate;
+    transform: scale(1.1);
+  }

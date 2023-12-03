@@ -1,0 +1,41 @@
+.newsLetterCont {
+    height: 30vh;
+    background-color: #dfe2db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  
+  .newsLetterCont h1 {
+    font-size: 70px;
+    margin-bottom: 20px;
+  }
+  
+  .newsLetterCont #newsDesc {
+    font-size: 24px;
+    font-weight: 300;
+    margin-bottom: 20px;
+  }
+  
+  .newsLetterInput {
+    width: 50%;
+    height: 40px;
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid lightgray;
+  }
+  
+  .newsLetterInput input {
+    border: none;
+    flex: 8;
+    padding-left: 20px;
+  }
+  
+  .newsLetterInput button {
+    flex: 1;
+    border: none;
+    background-color: red;
+    color: white;
+  }
