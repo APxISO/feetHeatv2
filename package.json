@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon server.js ",
-    "test": "jest",
-    "seed": "node ./db/seed.js"
+    "client": "cd client && npm start",
+    "seed": "node ./db/seed.js",
+    "dev": "concurrently \"npm run start\" \"npm run seed\" \"npm run client\""
   },
   "author": "",
   "license": "ISC",
