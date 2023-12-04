@@ -1,0 +1,67 @@
+.loginCont {
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(
+        rgba(255, 255, 255, 0.5),
+        rgba(255, 255, 255, 0.5)
+      ),
+      url("https://images.pexels.com/photos/7500610/pexels-photo-7500610.jpeg?cs=srgb&dl=pexels-erik-mclean-7500610.jpg&fm=jpg")
+        center;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .loginCard {
+    width: 25%;
+    padding: 20px;
+    background-color: #212a2f;
+  }
+  
+  .loginCard h2 {
+    font-size: 24px;
+    font-weight: 300;
+    display: flex;
+    justify-content: center;
+    color: white;
+    text-decoration: underline;
+    margin-bottom: 15px;
+  }
+  
+  .loginCard form {
+    display: flex;
+    flex-direction: column;
+    color: white;
+  }
+  
+  .loginCard input {
+    flex: 1;
+    min-width: 40%;
+    margin: 10px 0;
+    padding: 10px;
+  }
+  
+  .loginCard button {
+    width: 40%;
+    border: none;
+    padding: 15px 20px;
+    background-color: red;
+    color: white;
+    cursor: pointer;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .loginCard button:hover {
+    animation: alternate;
+    transform: scale(1.1);
+  }
+  
+  #link {
+    margin: 5px 0px;
+    font-size: 12px;
+    text-decoration: underline;
+    cursor: pointer;
+  }
