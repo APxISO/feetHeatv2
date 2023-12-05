@@ -1,0 +1,12 @@
+.announcementCont {
+    height: 30px;
+    width: 100vw;
+    background-color: #212a2f;
+    color: white;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 500;
+  }

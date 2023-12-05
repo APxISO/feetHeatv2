@@ -1,0 +1,37 @@
+.popProductsHead {
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: red;
+    margin-bottom: 2rem;
+  }
+  
+  .popProductsFoot {
+    padding: 10px 20px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+  }
+  
+  .popProductsFoot button {
+    padding: 10px;
+    font-size: 20px;
+    color: white;
+    background-color: red;
+    cursor: pointer;
+  }
+  
+  .popProductsCont {
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    background-color: #212a2f;
+  }
+  

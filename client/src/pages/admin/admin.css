@@ -1,0 +1,87 @@
+.adminCont {
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(
+        rgba(255, 255, 255, 0.5),
+        rgba(255, 255, 255, 0.5)
+      ),
+      url("https://images.pexels.com/photos/1456721/pexels-photo-1456721.jpeg?cs=srgb&dl=pexels-ray-piedra-1456721.jpg&fm=jpg")
+        center;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .adminCard {
+    width: 25%;
+    padding: 20px;
+    background-color: #212a2f;
+  }
+  
+  .adminCard h2 {
+    font-size: 24px;
+    font-weight: 300;
+    display: flex;
+    justify-content: center;
+    color: white;
+    margin-bottom: 25px;
+    text-decoration: underline;
+  }
+  
+  .adminCard p {
+    font-size: 15px;
+    font-weight: 300;
+    display: flex;
+    justify-content: center;
+    color: white;
+    margin-bottom: 25px;
+    text-align: center;
+  }
+  
+  .adminCard form {
+    display: flex;
+    flex-direction: column;
+    color: white;
+  }
+  
+  .adminCard input {
+    flex: 1;
+    min-width: 40%;
+    margin: 10px 0;
+    padding: 10px;
+  }
+  
+  .adminCard button {
+    width: 40%;
+    border: none;
+    padding: 15px 20px;
+    background-color: red;
+    color: white;
+    cursor: pointer;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .adminCard button:hover {
+    animation: alternate;
+    transform: scale(1.1);
+  }
+  
+  .adminUsersCard {
+    display: flex;
+    flex-direction: column;
+    color: white; 
+    border: 1px solid white;
+  }
+  
+  .adminUsersCard h5 {
+    font-size: 10px;
+    font-weight: 300;
+    display: flex;
+    justify-content: center;
+    color: white;
+    margin-bottom: 5px;
+    
+  }
