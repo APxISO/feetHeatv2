@@ -1,7 +1,7 @@
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-// import logo from "./logo.PNG";
+import Logo from "../../assets/FeetHeatLogo.png";
 import "./navbar.comp.css"
 import ShoppingCartOutlined from '@mui/icons-material/ShoppingCartOutlined';
 
@@ -16,7 +16,7 @@ const Navbar = ({ user, setToken, setUser, token }) => {
     <div className="navbar">
       <div className="navcont">
         <Link to="/" className="navcenter">
-          <img alt="Feet Heat Logo" />
+          {/* <img src={Logo} alt="Feet Heat Logo" /> */}LOGO
         </Link>
         <div className="navright">
           <div className="menuCont">
