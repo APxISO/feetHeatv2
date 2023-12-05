@@ -1,0 +1,147 @@
+.emptyCartCard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #212a2f;
+  }
+  
+  .cartCont {
+  }
+  
+  .cartCard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+  }
+  
+  .cartWrapper {
+    padding: 20px;
+  }
+  
+  .cartWrapper h1 {
+    font-weight: 300;
+    text-align: center;
+  }
+  .cartTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+  }
+  
+  .cartTopTxt {
+  }
+  
+  #topTxt {
+    text-decoration: underline;
+    cursor: pointer;
+    margin: 0px 10px;
+  }
+  
+  #topButton {
+    padding: 10px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  .cartBottom {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .cartInfo {
+    flex: 3;
+  }
+  
+  .cartProduct {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .cartProductDetail {
+    flex: 2;
+    display: flex;
+  }
+  
+  .cartProductDetail img {
+    width: 200px;
+  }
+  
+  .ProdDtetails {
+  }
+  .prodName {
+  }
+  .prodId {
+  }
+  
+  .prodColor {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+  }
+  
+  .prodSize {
+  }
+  
+  .priceDetail {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .ProdAmntCont {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  #prodPrice {
+    font-size: 30px;
+    font-weight: 200;
+    color: red;
+  }
+  
+  hr {
+    background-color: #eee;
+    border: none;
+    height: 1px;
+  }
+  
+  .cartSummary {
+    flex: 1;
+    border: 0.5px solid lightgray;
+    border-radius: 10px;
+    padding: 20px;
+    height: 50vh;
+  }
+  
+  .cartSumItem {
+    margin: 30px 0px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  #cartSumItemTxt {
+  }
+  
+  #cartSumItemPrice {
+  }
+  
+  #total {
+  }
+  
+  #bottomButton {
+    width: 100%;
+    padding: 10px;
+    background-color: black;
+    color: white;
+    font-weight: 600;
+  }
+  
+  button #bottomButton :hover {
+    background-color: #f8f4f4;
+  }
