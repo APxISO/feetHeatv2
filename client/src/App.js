@@ -49,22 +49,18 @@ const App = () => {
     };
   
     const addItemToCart = async (currentProduct) => {
-      console.log(user, "Item added!");
-  
       if (!user) {
+        // For visitors (non-logged-in users)
         setCartItems((prevItems) => {
-          const productInCart = prevItems.find(
-            (item) => item.id === currentProduct.id
-          );
+          const productInCart = prevItems.find(item => item.id === currentProduct.id);
+    
           if (productInCart) {
-            // If the item is already in the cart, update its quantity
-            return prevItems.map((item) => {
-              if (item.id === currentProduct.id) {
-                return { ...item, qty: item.qty + 1 };
-              } else {
-                return item;
-              }
-            });
+            // If the item is already in the cart, update its quantity and display price
+            return prevItems.map(item =>
+              item.id === currentProduct.id
+                ? { ...item, qty: item.qty + 1, displayPrice: (item.qty + 1) * item.price }
+                : item
+            );
           } else {
             // If the item is not in the cart, add it with a quantity of 1
             return [
@@ -77,56 +73,58 @@ const App = () => {
             ];
           }
         });
-        return;
-      }
-  
-      // Make sure the user.cart object is defined before accessing its properties
-      if (!user.cart) {
-        await fetchUser();
+      } else {
+        // For logged-in users
         if (!user.cart) {
           console.error("User cart not initialized.");
           return;
         }
-      }
-  
-      const productInCart = user.cart.products.find(
-        (product) => product.id === currentProduct.id
-      );
-  
-      if (productInCart) {
-        const response = await fetch(`/api/orders/updateCartItem`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            orderId: user.cart.id,
-            productId: currentProduct.id,
-          }),
-        });
-  
-        await fetchUser();
-        return;
-      } else {
-        const response = await fetch(`/api/orders/cart`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            orderId: user.cart.id,
-            productId: currentProduct.id,
-            price: currentProduct.price,
-            quantity: 1,
-          }),
-        });
-  
-        await fetchUser();
-        return;
+    
+        const productInCart = user.cart.products.find(product => product.id === currentProduct.id);
+    
+        if (productInCart) {
+          const response = await fetch(`/api/orders/updateCartItem`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              orderId: user.cart.id,
+              productId: currentProduct.id,
+              change: 1,
+            }),
+          });
+    
+          if (response.ok) {
+            await fetchUser(); // Fetch updated user cart data, including updated total
+          } else {
+            console.error("Failed to update item quantity in cart");
+          }
+        } else {
+          const response = await fetch(`/api/orders/cart`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              orderId: user.cart.id,
+              productId: currentProduct.id,
+              price: currentProduct.price,
+              quantity: 1,
+            }),
+          });
+    
+          if (response.ok) {
+            await fetchUser(); // Fetch updated user cart data, including updated total
+          } else {
+            console.error("Failed to add item to cart");
+          }
+        }
       }
     };
+    
   
     useEffect(() => {
       fetchProducts();

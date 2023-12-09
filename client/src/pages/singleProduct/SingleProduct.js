@@ -33,13 +33,13 @@ const ProductSingleView = ({ products, fetchProducts, addItemToCart }) => {
           <div className="price">$ {product.price}</div>
 
           <div className="addCont">
-            <button className="checkoutButton" onClick={() => handleAddToCart(product)}>
+            <button className="actionButtons" onClick={() => handleAddToCart(product)}>
               ADD TO CART
             </button>
-            <Link to="/Products" className="checkoutButton">
+            <Link to="/Products" className="actionButtons">
               CONTINUE SHOPPING
             </Link>
-            <Link to="/Cart" className="checkoutButton">
+            <Link to="/Cart" className="actionButtons">
               CHECKOUT
             </Link>
           </div>

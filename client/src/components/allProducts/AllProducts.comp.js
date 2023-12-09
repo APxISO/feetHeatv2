@@ -1,9 +1,8 @@
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import React from "react";
 import { Link } from "react-router-dom";
-import Newsletter from "../newsletter/Newsletter.comp";
 import "../allProducts/allProducts.css"
-import ProductSingleView from "../../pages/singleProduct/SingleProduct";
+
 
 const AllProducts = ({ products }) => {
   console.log(products);
