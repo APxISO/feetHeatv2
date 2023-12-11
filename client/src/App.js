@@ -12,16 +12,17 @@ import Footer from "./components/footer/Footer.comp";
 import AllProducts from "./components/allProducts/AllProducts.comp";
 import Admin from "./pages/admin/Admin";
 
-
 const App = () => {
     const [products, setProducts] = useState([]);
     const [user, setUser] = useState(null);
-    const [token, setToken] = useState("");
+    const [token, setToken] = useState(localStorage.getItem("token") || "");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirm, setConfirm] = useState("");
     const [cartItems, setCartItems] = useState([]);
     const [error, setError] = useState("");
+    const [total, setTotal] = useState(0);
+
   
     const fetchProducts = async () => {
       const response = await fetch(`/api/products`);
@@ -75,61 +76,80 @@ const App = () => {
         });
       } else {
         // For logged-in users
-        if (!user.cart) {
-          console.error("User cart not initialized.");
-          return;
-        }
+        
+        if (user && user.cart) {
+          try {
+            let response;
+            const orderId = parseInt(user.cart.id, 10); // Parse to integer
+            const productId = parseInt(currentProduct.id, 10); // Parse to integer
     
-        const productInCart = user.cart.products.find(product => product.id === currentProduct.id);
+            const productInCart = user.cart.products.find(product => product.id === productId);
     
-        if (productInCart) {
-          const response = await fetch(`/api/orders/updateCartItem`, {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              orderId: user.cart.id,
-              productId: currentProduct.id,
-              change: 1,
-            }),
-          });
+            if (productInCart) {
+              // Ensure request body is formatted correctly
+              response = await fetch(`/api/orders/updateCartItem`, {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  orderId, // Use parsed integer
+                  productId, // Use parsed integer
+                  change: 1,
+                }),
+              });
+            } else {
+              // Add new product to cart
+              response = await fetch(`/api/orders/cart`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  orderId: user.cart.id, // Ensure orderId is an integer
+                  productId: currentProduct.id, // Ensure productId is an integer
+                  price: currentProduct.price, // Ensure price is a number
+                  quantity: 1,
+                }),
+              });
+            }
+      
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(`Failed to update cart: ${errorData.error}`);
+            }
     
-          if (response.ok) {
-            await fetchUser(); // Fetch updated user cart data, including updated total
-          } else {
-            console.error("Failed to update item quantity in cart");
+            await fetchUser(); // Fetch updated user cart data
+      } catch (error) {
+        console.error(error.message);
+    
           }
-        } else {
-          const response = await fetch(`/api/orders/cart`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              orderId: user.cart.id,
-              productId: currentProduct.id,
-              price: currentProduct.price,
-              quantity: 1,
-            }),
-          });
-    
-          if (response.ok) {
-            await fetchUser(); // Fetch updated user cart data, including updated total
-          } else {
-            console.error("Failed to add item to cart");
-          }
         }
-      }
-    };
+      };
+    }
     
-  
     useEffect(() => {
       fetchProducts();
-      fetchUser();
-    }, [token]);
+      if (token) {
+          fetchUser();
+      }
+  }, [token]);
+
+  useEffect(() => {
+      if (user && user.cart) {
+          let newTotal = user.cart.products.reduce((acc, product) => {
+              return acc + (product.price * product.quantity);
+          }, 0);
+          setTotal(newTotal);
+      } else {
+          let newTotal = cartItems.reduce((acc, item) => {
+              return acc + (item.displayPrice * item.qty);
+          }, 0);
+          setTotal(newTotal);
+      }
+  }, [cartItems, user]);
   
     return (
       <div id="container">
@@ -212,13 +232,13 @@ const App = () => {
             <Route
               element={
                 <Cart
-                  setCartItems={setCartItems}
-                  cartItems={cartItems}
-                  addItemToCart={addItemToCart}
-                  user={user}
-                  token={token}
-                  products={products}
-                  fetchUser={fetchUser}
+                setCartItems={setCartItems}
+                cartItems={cartItems}
+                addItemToCart={addItemToCart}
+                user={user}
+                token={token}
+                products={products}
+                fetchUser={fetchUser}
                 />
               }
               path="/Cart"

@@ -161,11 +161,20 @@ const Cart = ({
     let newTotal = 0;
     if (cartItems) {
       cartItems.forEach((item) => {
-        newTotal += item.displayPrice * item.qty;
+        newTotal += item.price * item.qty;
       });
     }
     setTotal(newTotal);
   }, [cartItems]);
+
+  useEffect(() => {
+    if (user && user.cart && user.cart.products) {
+      const totalForLoggedInUser = user.cart.products.reduce((acc, product) => {
+        return acc + (product.price * product.quantity);
+      }, 0);
+      setUserTotal(totalForLoggedInUser);
+    }
+  }, [user?.cart?.products]);
 
   const renderCartItem = (product, quantity) => (
     <div className="cartProduct">

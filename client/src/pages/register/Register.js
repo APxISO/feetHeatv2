@@ -72,7 +72,7 @@ const Register = ({ fetchUser }) => {
             minLength="5"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="username"
+            placeholder="Enter your email"
           />
           <input
             required
@@ -80,7 +80,7 @@ const Register = ({ fetchUser }) => {
             minLength="8"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="password"
+            placeholder="Enter a password"
           />
           <input
             required
@@ -88,7 +88,7 @@ const Register = ({ fetchUser }) => {
             minLength="8"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
-            placeholder="confirm password"
+            placeholder="Confirm password"
           />
           <div className="registerAgreement">
             By creating an account, I consent to the processing of my personal

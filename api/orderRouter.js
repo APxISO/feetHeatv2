@@ -56,9 +56,19 @@ orderRouter.delete("/deleteItem/:orderId/:productId", async (req, res, next) => 
   }
 });
 
+
 orderRouter.patch("/updateCartItem", async (req, res, next) => {
   try {
-    const { orderId, productId, change } = req.body;
+    console.log("Request body:", req.body); // Log request body for debugging
+
+    const orderId = parseInt(req.body.orderId, 10);
+    const productId = parseInt(req.body.productId, 10);
+    const change = req.body.change;
+
+    if (isNaN(orderId) || isNaN(productId)) {
+      return res.status(400).send("orderId and productId must be integers");
+    }
+
     const productPrice = await getProductPrice({ productId });
     const itemToUpdate = await updateItemQuantity({
       orderId,
@@ -72,15 +82,6 @@ orderRouter.patch("/updateCartItem", async (req, res, next) => {
   }
 });
 
-orderRouter.post("/orderPrice", async (req, res, next) => {
-  try {
-    const { orderId } = req.body;
-    const orderPrice = await getOrderPrice({ orderId });
-    res.json({ orderPrice });
-  } catch (error) {
-    next(error);
-  }
-});
 
 orderRouter.patch("/checkoutOrder/:orderId", async (req, res, next) => {
   try {
