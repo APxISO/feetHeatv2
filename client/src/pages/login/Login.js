@@ -1,52 +1,20 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../login/login.css";
-import Navbar from "../../components/navbar/Navbar.comp";
 
-const Login = () => {
+const Login = ({ handleUserLogin }) => { // Include handleUserLogin in props
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [token, setToken] = useState("");
   const navigate = useNavigate();
-
-  const fetchUser = async () => {
-    try {
-      const response = await fetch(`/api/users/me`, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-
-      const userData = await response.json();
-
-      if (userData.error) {
-        setError(userData.error.message);
-        return;
-      }
-
-      
-      alert("Welcome back " + `${username}` + "!");
-      navigate("/Products");
-    } catch (error) {
-      console.error(error);
-      setError("Error fetching user data. Please try again.");
-    }
-  };
 
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
       const response = await fetch(`/api/users/login`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
       });
 
       const data = await response.json();
@@ -56,19 +24,10 @@ const Login = () => {
         return;
       }
 
-      if (!data.token) {
-        console.error("Invalid response format:", data);
-        setError("An unexpected error occurred");
-        return;
-      }
+      // Call handleUserLogin from App.js
+      handleUserLogin(data.user, data.token);
 
-      setToken(data.token);
-      localStorage.setItem("token", data.token);
-
-      await fetchUser();
-
-      setUsername("");
-      setPassword("");
+      navigate("/Products");
     } catch (error) {
       console.error(error);
       setError("Error logging in. Please try again.");
@@ -76,7 +35,6 @@ const Login = () => {
   };
 
   return (
-    
     <div className="loginCont">
       <div className="loginCard">
         <h2>SIGN IN</h2>
@@ -102,7 +60,6 @@ const Login = () => {
         {error && <p>{error}</p>}
       </div>
     </div>
-    
   );
 };
 

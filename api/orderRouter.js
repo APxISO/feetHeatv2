@@ -59,7 +59,7 @@ orderRouter.delete("/deleteItem/:orderId/:productId", async (req, res, next) => 
 
 orderRouter.patch("/updateCartItem", async (req, res, next) => {
   try {
-    console.log("Request body:", req.body); // Log request body for debugging
+    console.log("Request body:", req.body); 
 
     const orderId = parseInt(req.body.orderId, 10);
     const productId = parseInt(req.body.productId, 10);

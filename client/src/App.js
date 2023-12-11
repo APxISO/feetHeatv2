@@ -16,14 +16,17 @@ const App = () => {
     const [products, setProducts] = useState([]);
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem("token") || "");
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirm, setConfirm] = useState("");
     const [cartItems, setCartItems] = useState([]);
     const [error, setError] = useState("");
     const [total, setTotal] = useState(0);
 
   
+    const handleUserLogin = (userData, userToken) => {
+      setUser(userData);
+      setToken(userToken);
+      localStorage.setItem('token', userToken);
+    };
+
     const fetchProducts = async () => {
       const response = await fetch(`/api/products`);
       const info = await response.json();
@@ -33,19 +36,30 @@ const App = () => {
     const fetchUser = async () => {
       const lsToken = localStorage.getItem("token");
   
-      if (lsToken) {
-        setToken(lsToken);
+      if (!lsToken) {
+        console.log("No token found, user is not logged in.");
+        return; // Exit the function if there's no token
       }
-      const response = await fetch(`/api/users/me`, {
-        headers: {
-          Authorization: `Bearer ${lsToken}`,
-        },
-      });
-  
-      const data = await response.json();
-      console.log(data);
-      if (!data.error) {
-        setUser(data);
+
+      setToken(lsToken);
+
+      try {
+        const response = await fetch(`/api/users/me`, {
+          headers: {
+            Authorization: `Bearer ${lsToken}`,
+          },
+        });
+
+        const data = await response.json();
+        console.log(data);
+
+        if (!data.error) {
+          setUser(data);
+        } else {
+          console.error(data.error);
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
       }
     };
   
@@ -132,121 +146,29 @@ const App = () => {
     
     useEffect(() => {
       fetchProducts();
-      if (token) {
-          fetchUser();
-      }
-  }, [token]);
+      fetchUser();
+    }, [token]); 
 
-  useEffect(() => {
-      if (user && user.cart) {
-          let newTotal = user.cart.products.reduce((acc, product) => {
-              return acc + (product.price * product.quantity);
-          }, 0);
-          setTotal(newTotal);
-      } else {
-          let newTotal = cartItems.reduce((acc, item) => {
-              return acc + (item.displayPrice * item.qty);
-          }, 0);
-          setTotal(newTotal);
-      }
-  }, [cartItems, user]);
+  
   
     return (
       <div id="container">
-        <Announcement />
-        <Navbar user={user} setUser={setUser} setToken={setToken} token={token} />
-  
-        <div id="main">
-          <Routes>
-            <Route element={<Home user={user} />} path="/" />
-            <Route
-              element={
-                <Login
-                  username={username}
-                  setUsername={setUsername}
-                  password={password}
-                  setPassword={setPassword}
-                  user={user}
-                  setUser={setUser}
-                  setToken={setToken}
-                  error={error}
-                  setError={setError}
-                  fetchUser={fetchUser}
-                />
-              }
-              path="/Login"
-            />
-  
-            <Route
-              element={
-                <Register
-                  setUsername={setUsername}
-                  username={username}
-                  password={password}
-                  setPassword={setPassword}
-                  setConfirm={setConfirm}
-                  confirm={confirm}
-                  setToken={setToken}
-                  setError={setError}
-                  fetchUser={fetchUser}
-                />
-              }
-              path="/Register"
-            />
-  
-            <Route
-              element={
-                <AllProducts
-                  products={products}
-                  fetchProducts={fetchProducts}
-                  addItemToCart={addItemToCart}
-                />
-              }
-              path="/Products"
-            />
-  
-            <Route
-              element={
-                <ProductSingleView
-                  fetchProducts={fetchProducts}
-                  addItemToCart={addItemToCart}
-                  products={products}
-                />
-              }
-              path="/Products/:id"
-            />
-            <Route element={<PurchaseSuccessful />} path="/PurchaseSuccessful" />
-  
-            <Route
-              element={
-                <Admin
-                  fetchUser={fetchUser}
-                  products={products}
-                  user={user}
-                  token={token}
-                  fetchProducts={fetchProducts}
-                />
-              }
-              path="/admin"
-            />
-            <Route
-              element={
-                <Cart
-                setCartItems={setCartItems}
-                cartItems={cartItems}
-                addItemToCart={addItemToCart}
-                user={user}
-                token={token}
-                products={products}
-                fetchUser={fetchUser}
-                />
-              }
-              path="/Cart"
-            ></Route>
-          </Routes>
-        </div>
-        <Footer />
+      <Announcement />
+      <Navbar user={user} setUser={setUser} setToken={setToken} token={token} />
+      <div id="main">
+        <Routes>
+          <Route path="/" element={<Home user={user} />} />
+          <Route path="/Login" element={<Login handleUserLogin={handleUserLogin} />} />
+          <Route path="/Register" element={<Register setToken={setToken} setError={setError} fetchUser={fetchUser} />} />
+          <Route path="/Products" element={<AllProducts products={products} fetchProducts={fetchProducts} addItemToCart={addItemToCart} />} />
+          <Route path="/Products/:id" element={<ProductSingleView fetchProducts={fetchProducts} addItemToCart={addItemToCart} products={products} />} />
+          <Route path="/PurchaseSuccessful" element={<PurchaseSuccessful />} />
+          <Route path="/admin" element={<Admin fetchUser={fetchUser} products={products} user={user} token={token} fetchProducts={fetchProducts} />} />
+          <Route path="/Cart" element={<Cart setCartItems={setCartItems} cartItems={cartItems} addItemToCart={addItemToCart} user={user} token={token} products={products} fetchUser={fetchUser} />} />
+        </Routes>
       </div>
+      <Footer />
+    </div>
     );
   };
   

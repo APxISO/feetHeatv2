@@ -41,18 +41,18 @@ const getUser = async ({ username, password }) => {
     );
 
     if (!user) {
-      throw { name: "loginError", message: "Incorrect username or password" };
+      return null; // User not found
     }
 
     const passwordsMatch = await bcrypt.compare(password, user.password);
-    if (passwordsMatch) {
-      delete user.password;
-      return user;
-    } else {
-      throw { name: "loginError", message: "Incorrect username or password" };
+    if (!passwordsMatch) {
+      return null; // Incorrect password
     }
+
+    delete user.password; // Remove password before returning
+    return user;
   } catch (error) {
-    throw error;
+    throw error; // Handle error (e.g., database error)
   }
 };
 

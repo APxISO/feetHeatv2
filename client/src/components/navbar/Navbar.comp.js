@@ -5,12 +5,9 @@ import "./navbar.comp.css"
 import ShoppingCartOutlined from '@mui/icons-material/ShoppingCartOutlined';
 
 const Navbar = ({ user, setToken, setUser, token }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const isLoggedIn = !!user && !!token;
 
-  useEffect(() => {
-    setIsLoggedIn(!!user && !!token);
-  }, [user, token]);
-
+  
   return (
     <div className="navbar">
       <div className="navcont">

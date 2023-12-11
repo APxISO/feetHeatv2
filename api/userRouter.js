@@ -19,6 +19,26 @@ userRouter.use((req, res, next) => {
   next();
 });
 
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    console.log("No token provided");
+    return res.sendStatus(401);
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      console.log("Token verification error:", err.message);
+      return res.sendStatus(403);
+    }
+    req.user = user;
+    console.log("Token verified, user ID:", user.id);
+    next();
+  });
+}
+
 userRouter.post("/register", async (req, res, next) => {
   try {
     const { username, password } = req.body;
@@ -40,8 +60,8 @@ userRouter.post("/register", async (req, res, next) => {
 userRouter.post("/login", async (req, res, next) => {
   try {
     const user = await getUser(req.body);
-    if (user.error) {
-      return res.status(401).send(user.error);
+    if (!user) {
+      return res.status(401).send({ message: "Incorrect username or password" });
     }
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1w' });
@@ -51,24 +71,23 @@ userRouter.post("/login", async (req, res, next) => {
   }
 });
 
-userRouter.get("/me", async (req, res, next) => {
-  if (!req.user) {
-    return res.status(401).send({ error: "No user logged in" });
+userRouter.get("/me", authenticateToken, async (req, res, next) => {
+  if (!req.user || !req.user.id) {
+    console.log("req.user or req.user.id is undefined");
+    return res.status(401).send({ error: "Invalid token or user not found" });
   }
-  res.send(req.user);
-});
-
-userRouter.get("/:userId", async (req, res, next) => {
   try {
-    const { userId } = req.params; // Extract userId from the URL parameters
-    const user = await getUserById(userId);
-
-    if (!user) {
+    console.log("Fetching user details for ID:", req.user.id);
+    const userDetails = await getUserById(req.user.id);
+    if (!userDetails) {
+      console.log("User not found for ID:", req.user.id);
       return res.status(404).send({ error: "User not found" });
     }
 
-    res.send(user);
+    console.log("User details found:", userDetails);
+    res.send(userDetails);
   } catch (error) {
+    console.error("Error in /me route:", error);
     next(error);
   }
 });

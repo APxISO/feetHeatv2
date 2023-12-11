@@ -23,20 +23,38 @@ app.use(async (req, res, next) => {
     const token = authHeader.split(' ')[1];
     try {
       const user = JWT.verify(token, process.env.JWT_SECRET);
-      req.user = await getUserById(user.id);
+
+      // Fetch user details
+      const userDetails = await getUserById(user.id);
+      if (!userDetails) {
+        console.log("User not found with id:", user.id);
+        return res.status(404).send({ error: "User not found" });
+      }
+      req.user = userDetails;
+
+      // Fetch user's cart
       req.user.cart = await getCartByUserId(req.user.id);
-      req.user.cart.products = await getAllProductsByOrderId(req.user.cart.id);
+      if (!req.user.cart) {
+        console.log("Cart not found for user id:", req.user.id);
+        req.user.cart = { products: [] }; // Assuming a default structure
+      } else {
+        // Fetch products for the cart
+        req.user.cart.products = await getAllProductsByOrderId(req.user.cart.id);
+      }
+
       next();
     } catch (error) {
       if (error.name === 'JsonWebTokenError') {
         return res.status(401).send({ error: 'Invalid Token' });
       }
+      console.error("Error in JWT Middleware:", error);
       next(error);
     }
   } else {
     next();
   }
 });
+
 
 // API Routes
 app.use('/api', apiRouter); 
