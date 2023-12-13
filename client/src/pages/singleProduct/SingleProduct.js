@@ -14,10 +14,15 @@ const ProductSingleView = ({ products, fetchProducts, addItemToCart }) => {
     }
   }, [products, id]);
 
-  const handleAddToCart = (product) => {
-    addItemToCart(product);
-    setAlert("Your shoes have been added to your cart!");
+  const handleAddToCart = async (product) => {
+    const response = await addItemToCart(product);
+    if (response === 'success') {
+      setAlert("Your shoes have been added to your cart!");
+    } else {
+      setAlert("Failed to add shoes to your cart.");
+    }
   };
+  
 
   return product ? (
     <div className="singleProdCont">

@@ -4,6 +4,7 @@ const {
   getOrderById,
   checkoutOrder,
   createOrder,
+  getCartByUserId
 } = require("../db/orders");
 const { getProductPrice } = require("../db/products");
 const {
@@ -27,7 +28,12 @@ orderRouter.get("/", async (req, res, next) => {
 
 orderRouter.get("/:id", async (req, res, next) => {
   try {
-    const order = await getOrderById({ orderId: req.params.id });
+    const orderId = parseInt(req.params.id, 10);
+    if (isNaN(orderId)) {
+      return res.status(400).send("Invalid orderId, must be an integer.");
+    }
+
+    const order = await getOrderById(orderId);
     if (!order) {
       return res.status(404).send("Order not found");
     }
@@ -37,9 +43,24 @@ orderRouter.get("/:id", async (req, res, next) => {
   }
 });
 
+
 orderRouter.post("/cart", async (req, res, next) => {
   try {
-    const itemToAdd = await addItemToOrder(req.body);
+    const userId = req.user.id; // Assuming req.user.id contains the authenticated user's ID
+
+    // Check for an existing active cart for the user
+    let userCart = await getCartByUserId(userId);
+    if (!userCart) {
+      // If no active cart, create a new cart
+      userCart = await createOrder({ creatorId: userId });
+    }
+
+    // Add the item to the user's cart
+    const itemToAdd = await addItemToOrder({
+      ...req.body,
+      orderId: userCart.id // Use the existing or new cart's ID
+    });
+
     res.status(201).json(itemToAdd);
   } catch (error) {
     next(error);
@@ -59,9 +80,9 @@ orderRouter.delete("/deleteItem/:orderId/:productId", async (req, res, next) => 
 
 orderRouter.patch("/updateCartItem", async (req, res, next) => {
   try {
+    
     console.log("Request body:", req.body); 
-
-    const orderId = parseInt(req.body.orderId, 10);
+    const orderId = parseInt(req.params.orderId, 10); // Or req.body.orderId based on how it's sent
     const productId = parseInt(req.body.productId, 10);
     const change = req.body.change;
 
@@ -85,8 +106,11 @@ orderRouter.patch("/updateCartItem", async (req, res, next) => {
 
 orderRouter.patch("/checkoutOrder/:orderId", async (req, res, next) => {
   try {
-    const { orderId } = req.params;
-    const orderToCheckout = await checkoutOrder({ orderId });
+    const orderId = parseInt(req.params.orderId, 10);
+    if (isNaN(orderId)) {
+      return res.status(400).send("orderId must be an integer");
+    }
+    const orderToCheckout = await checkoutOrder(orderId);
     res.json(orderToCheckout);
   } catch (error) {
     next(error);

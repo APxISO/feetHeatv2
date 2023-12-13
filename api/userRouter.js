@@ -21,6 +21,7 @@ userRouter.use((req, res, next) => {
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
+  console.log("Auth header received:", authHeader);
   const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
@@ -72,6 +73,7 @@ userRouter.post("/login", async (req, res, next) => {
 });
 
 userRouter.get("/me", authenticateToken, async (req, res, next) => {
+  console.log("Token received in /me route:", req.headers.authorization);
   if (!req.user || !req.user.id) {
     console.log("req.user or req.user.id is undefined");
     return res.status(401).send({ error: "Invalid token or user not found" });
@@ -103,6 +105,25 @@ userRouter.get("/username/:username", async (req, res, next) => {
 
     res.send(user);
   } catch (error) {
+    next(error);
+  }
+});
+
+userRouter.get("/:userId", async (req, res, next) => {
+  try {
+    const userId = parseInt(req.params.userId, 10);
+    if (isNaN(userId)) {
+      return res.status(400).send("Invalid user ID");
+    }
+
+    const user = await getUserById(userId);
+    if (!user) {
+      return res.status(404).send({ error: "User not found" });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
     next(error);
   }
 });
