@@ -11,15 +11,12 @@ const getAllOrders = async () => {
 
 const getOrderById = async (orderId) => {
   try {
-    const { rows: [order] } = await client.query(`
-      SELECT * FROM orders WHERE id = $1;
-    `, [orderId]);
+    const { rows: [order] } = await client.query(`SELECT * FROM orders WHERE id = $1;`, [orderId]);
     return order;
   } catch (error) {
     throw error;
   }
 };
-
 
 const updateOrder = async ({ id, creatorId }) => {
   if (typeof id !== "number") {

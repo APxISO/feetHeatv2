@@ -15,13 +15,14 @@ const ProductSingleView = ({ products, fetchProducts, addItemToCart }) => {
   }, [products, id]);
 
   const handleAddToCart = async (product) => {
-    const response = await addItemToCart(product);
-    if (response === 'success') {
+    try {
+      await addItemToCart(product);
       setAlert("Your shoes have been added to your cart!");
-    } else {
+    } catch (error) {
       setAlert("Failed to add shoes to your cart.");
     }
   };
+  
   
 
   return product ? (

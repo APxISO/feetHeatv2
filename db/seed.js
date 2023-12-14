@@ -40,12 +40,12 @@ const seedDB = async () => {
 const dropTables = async () => {
   console.log("Starting to drop tables");
   await client.query(`
-  DROP TABLE IF EXISTS order_items CASCADE;
-  DROP TABLE IF EXISTS orders CASCADE;
-  DROP TABLE IF EXISTS products_categories CASCADE;
-  DROP TABLE IF EXISTS categories CASCADE;
-  DROP TABLE IF EXISTS products CASCADE;
-  DROP TABLE IF EXISTS users CASCADE;
+    DROP TABLE IF EXISTS order_items;
+    DROP TABLE IF EXISTS orders;
+    DROP TABLE IF EXISTS products_categories;
+    DROP TABLE IF EXISTS categories;
+    DROP TABLE IF EXISTS products;
+    DROP TABLE IF EXISTS users;
   `);
   console.log("Tables dropped...");
 };
