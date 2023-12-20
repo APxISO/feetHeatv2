@@ -27,7 +27,12 @@ orderRouter.get("/", async (req, res, next) => {
 
 orderRouter.get("/:id", async (req, res, next) => {
   try {
-    const order = await getOrderById({ orderId: req.params.id });
+    const orderId = parseInt(req.params.id);
+    if (isNaN(orderId)) {
+      return res.status(400).send("Invalid order ID");
+    }
+
+    const order = await getOrderById(orderId);
     if (!order) {
       return res.status(404).send("Order not found");
     }
@@ -39,12 +44,26 @@ orderRouter.get("/:id", async (req, res, next) => {
 
 orderRouter.post("/cart", async (req, res, next) => {
   try {
-    const itemToAdd = await addItemToOrder(req.body);
+    // Assuming req.user.id contains the authenticated user's ID
+    let userCart = await getCartByUserId(req.user.id);
+    
+    if (!userCart) {
+      // If no active cart, create a new cart for the user
+      userCart = await createOrder({ creatorId: req.user.id });
+    }
+
+    // Add the item to the user's cart
+    const itemToAdd = await addItemToOrder({
+      orderId: userCart.id,
+      ...req.body
+    });
+
     res.status(201).json(itemToAdd);
   } catch (error) {
     next(error);
   }
 });
+
 
 orderRouter.delete("/deleteItem/:orderId/:productId", async (req, res, next) => {
   try {

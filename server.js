@@ -1,12 +1,11 @@
 const express = require('express');
+const path = require('path'); // Import the path module
 const morgan = require('morgan');
 const cors = require('cors');
 const JWT = require('jsonwebtoken');
 const { getUserById } = require('./db/users');
 const { getCartByUserId, getAllProductsByOrderId } = require('./db/orders');
-
-// Import routes
-const apiRouter = require('./api'); // Assuming you have an 'api' directory for your routes
+const apiRouter = require('./api');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -55,9 +54,8 @@ app.use(async (req, res, next) => {
   }
 });
 
-
 // API Routes
-app.use('/api', apiRouter); 
+app.use('/api', apiRouter);
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {

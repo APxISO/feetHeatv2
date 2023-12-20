@@ -67,9 +67,17 @@ const checkoutOrder = async (orderId) => {
 
 const getCartByUserId = async (creatorId) => {
   try {
-    const { rows: [cart] } = await client.query(`SELECT * FROM orders WHERE "creatorId" = $1 AND "isPurchased" = false;`, [creatorId]);
-    return cart;
+    // Fetch the most recent active cart for the user
+    const { rows } = await client.query(`
+      SELECT * FROM orders 
+      WHERE "creatorId" = $1 AND "isPurchased" = false 
+      ORDER BY id DESC
+      LIMIT 1;
+    `, [creatorId]);
+
+    return rows[0]; // Return the first (most recent) active cart, if any
   } catch (error) {
+    console.error("Error fetching cart by user ID:", error);
     throw error;
   }
 };

@@ -135,12 +135,16 @@ const App = () => {
     
           // Fetch updated user cart data
           await fetchUser();
+    
+          // Update state to trigger re-render
+          setUser({ ...user, cart: { ...user.cart } });
         } catch (error) {
           console.error(error.message);
           throw error; // Propagate the error so it can be caught and handled where this function is called
         }
       }
     };
+    
     
     useEffect(() => {
       fetchProducts();
@@ -163,7 +167,17 @@ const App = () => {
           <Route path="/Products/:id" element={<ProductSingleView fetchProducts={fetchProducts} addItemToCart={addItemToCart} products={products} />} />
           <Route path="/PurchaseSuccessful" element={<PurchaseSuccessful />} />
           <Route path="/admin" element={<Admin fetchUser={fetchUser} products={products} user={user} token={token} fetchProducts={fetchProducts} />} />
-          <Route path="/Cart" element={<Cart setCartItems={setCartItems} cartItems={cartItems} addItemToCart={addItemToCart} user={user} token={token} products={products} fetchUser={fetchUser} />} />
+          <Route path="/Cart" element={
+   <Cart 
+     setCartItems={setCartItems} 
+     cartItems={user && user.cart ? user.cart.products : cartItems} 
+     addItemToCart={addItemToCart} 
+     user={user} 
+     token={token} 
+     products={products} 
+     fetchUser={fetchUser} 
+   />
+} />
         </Routes>
       </div>
       <Footer />
