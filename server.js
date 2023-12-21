@@ -1,14 +1,23 @@
 const express = require('express');
-const path = require('path'); // Import the path module
+const path = require('path');
 const morgan = require('morgan');
 const cors = require('cors');
+const { Pool } = require('pg'); // Import Pool
 const JWT = require('jsonwebtoken');
-const { getUserById } = require('./db/users');
-const { getCartByUserId, getAllProductsByOrderId } = require('./db/orders');
 const apiRouter = require('./api');
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Database configuration
+const dbConfig = process.env.NODE_ENV === 'production' ? {
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+} : {};
+
+const db = new Pool(dbConfig);
 
 // Middleware
 app.use(morgan('dev'));
@@ -24,22 +33,16 @@ app.use(async (req, res, next) => {
       const user = JWT.verify(token, process.env.JWT_SECRET);
 
       // Fetch user details
-      const userDetails = await getUserById(user.id);
-      if (!userDetails) {
+      const userDetails = await db.query('SELECT * FROM users WHERE id = $1', [user.id]);
+      if (!userDetails.rows[0]) {
         console.log("User not found with id:", user.id);
         return res.status(404).send({ error: "User not found" });
       }
-      req.user = userDetails;
+      req.user = userDetails.rows[0];
 
       // Fetch user's cart
-      req.user.cart = await getCartByUserId(req.user.id);
-      if (!req.user.cart) {
-        console.log("Cart not found for user id:", req.user.id);
-        req.user.cart = { products: [] }; // Assuming a default structure
-      } else {
-        // Fetch products for the cart
-        req.user.cart.products = await getAllProductsByOrderId(req.user.cart.id);
-      }
+      const cart = await db.query('SELECT * FROM carts WHERE user_id = $1', [req.user.id]);
+      req.user.cart = cart.rows[0] || { products: [] };
 
       next();
     } catch (error) {
@@ -59,9 +62,9 @@ app.use('/api', apiRouter);
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('build'));
+  app.use(express.static(path.join(__dirname, 'client/build')));
   app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
   });
 }
 
@@ -75,3 +78,5 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
+module.exports = app; 
