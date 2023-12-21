@@ -1,23 +1,27 @@
-require('dotenv').config(); 
+require('dotenv').config();
+const { Pool } = require('pg');
 
-const { Pool } = require("pg");
-
-let db;
+let dbConfig = {};
 
 if (process.env.DATABASE_URL) {
-  db = new Pool({
+  dbConfig = {
     connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false },
-  });
+    ssl: {
+      rejectUnauthorized: false
+    }
+  };
 } else {
-  db = new Pool({ 
-    password: process.env.DB_PASSWORD,
+  // Local database configuration
+  dbConfig = {
     user: process.env.DB_USER,
-    database: process.env.DB_NAME,
-    host: 'localhost', 
-    port: 5432, 
-  });
+    password: process.env.DB_PASSWORD,
+    host: 'localhost',
+    port: 5432,
+    database: process.env.DB_NAME
+  };
 }
+
+const db = new Pool(dbConfig);
 
 db.connect()
   .then(() => console.log("Connected to database"))
