@@ -44,7 +44,7 @@ orderRouter.get("/:id", async (req, res, next) => {
 
 orderRouter.post("/cart", async (req, res, next) => {
   try {
-    // Assuming req.user.id contains the authenticated user's ID
+    
     let userCart = await getCartByUserId(req.user.id);
     
     if (!userCart) {

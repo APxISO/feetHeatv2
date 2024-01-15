@@ -55,3 +55,46 @@
     animation: alternate;
     transform: scale(1.1);
   }
+
+  /* Responsive Design for Tablets */
+@media (max-width: 1024px) {
+  .slideInfo {
+      text-align: center;
+  }
+  .slideInfo h1 {
+      font-size: 100px;
+
+  }
+  .slideInfo p {
+      font-size: 3rem;
+      
+  }
+  .slideInfo button {
+      font-size: 25px;
+      padding: 8px;
+      width: 15rem;
+      height: 5rem;
+  }
+}
+
+/* Responsive Design for Mobile Devices */
+@media (max-width: 430px) {
+  .sliderCont {
+      width: 100%;
+  }
+  .slideInfo {
+      text-align: center;
+      padding: 20px;
+  }
+  .slideInfo h1 {
+      font-size: 40px;
+  }
+  .slideInfo p {
+      font-size: 1.5rem;
+      margin: 20px 0px;
+  }
+  .slideInfo button {
+      font-size: 20px;
+      padding: 5px;
+  }
+}

@@ -39,3 +39,38 @@
     background-color: red;
     color: white;
   }
+
+  @media (max-width: 1024px) {
+    .newsLetterCont{
+      text-align: center;
+      
+    }
+
+    .newsLetterCont p{
+      font-size: 3rem;
+    }
+
+    .newsLetterInput{
+      width: 65%;
+      height: 3rem;
+      padding: 2px;
+        
+    }  
+  }
+  
+  /* Responsive Design for Mobile Devices */
+  @media (max-width: 430px) {
+    .newsLetterCont{
+      height: auto;
+      padding-bottom: 15px;
+    }
+    
+    .newsLetterCont p{
+      margin: auto; 
+    }
+
+    .newsLetterInput{
+      width: 80%;
+      height: 2rem;
+    }  
+  }

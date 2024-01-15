@@ -14,7 +14,8 @@ productRouter.get("/", async (req, res, next) => {
     const products = await getProducts();
     res.json(products);
   } catch (error) {
-    next(error);
+    console.error("Error fetching products:", error); 
+    res.status(500).send({ error: error.message });
   }
 });
 
